@@ -1,0 +1,1505 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevOps Engineer Portfolio - Presentation</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        /* 전체 페이지를 슬라이드 중앙 정렬용으로 사용 */
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: #e9e9e9; /* 슬라이드와 배경 구분 색상 */
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: auto; /* 화면이 작을 경우 스크롤 생성 */
+        }
+        
+        /* 슬라이드 쇼의 전체 뷰포트 - A4 비율 고정 */
+        .presentation-container {
+            width: 297mm;
+            height: 210mm;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden; /* 현재 슬라이드 외에는 보이지 않게 처리 */
+            background: white;
+        }
+
+        /* 모든 슬라이드를 감싸는 래퍼 */
+        .slides-wrapper {
+            display: flex; /* 슬라이드를 가로로 나열 */
+            width: 100%;
+            height: 100%;
+            transition: transform 0.5s ease-in-out; /* 부드러운 전환 효과 */
+        }
+
+        .slide {
+            width: 100%;
+            height: 100%;
+            flex-shrink: 0; /* 슬라이드 크기 줄어들지 않게 함 */
+            padding: 20mm;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* 좌/우 탐색 화살표 */
+        .nav-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 50px;
+            background-color: rgba(0, 0, 0, 0.3);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            user-select: none;
+            z-index: 10;
+            transition: background-color 0.3s;
+        }
+
+        .nav-arrow:hover {
+            background-color: rgba(0, 0, 0, 0.6);
+        }
+        
+        .nav-arrow.left-arrow {
+            left: 20px;
+        }
+        
+        .nav-arrow.right-arrow {
+            right: 20px;
+        }
+        
+        /* 화살표가 비활성화될 때 (첫/마지막 페이지) */
+        .nav-arrow.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* 슬라이드 카운터 */
+        .slide-counter {
+            position: absolute;
+            bottom: 15px;
+            right: 25px;
+            background: rgba(0, 0, 0, 0.4);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 14px;
+            z-index: 10;
+        }
+        
+        /* --- 기존 슬라이드 CSS (수정 없음) --- */
+        
+        .slide:last-child {
+            page-break-after: avoid;
+        }
+        
+        .slide-cover {
+            background: #ffffff;
+            color: #000000;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .slide-cover h1 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .slide-cover .subtitle {
+            font-size: 24px;
+            font-weight: 300;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+        
+        .slide-cover .contact {
+            font-size: 18px;
+            line-height: 1.6;
+            background: rgba(0,0,0,0.05);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .slide-header {
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 15px;
+            margin-bottom: 0px;
+        }
+        
+        .slide-header h2 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #667eea;
+        }
+        
+        .slide-header .subtitle {
+            font-size: 16px;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;;
+            align-items: center;
+            max-width: 100%;
+            padding-top: 60px
+        }
+        
+        .two-column {
+            display: flex;
+            gap: 30px;
+            width: 100%;
+            align-items: stretch;
+            justify-content: center;
+        }
+        
+        .two-column > div {
+            flex: 1;
+            max-width: calc(50% - 15px);
+        }
+        
+        .three-column {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .skill-category {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .skill-category h3 {
+            color: #667eea;
+            font-size: 18px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .skill-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .skill-tag {
+            background: #667eea;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .project-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 5px solid #667eea;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .project-card h3 {
+            color: #667eea;
+            font-size: 20px;
+            margin-bottom: 10px;
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .project-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .project-content {
+            line-height: 1.6;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .project-content p {
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .project-content ul {
+            flex-grow: 1;
+            margin-bottom: 20px;
+        }
+        
+        .highlight-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 20px;
+            text-align: center;
+            margin-top: auto;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .highlight-number {
+            font-size: 36px;
+            font-weight: 700;
+            display: block;
+        }
+        
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+            width: 100%;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 0;
+            height: 100%;
+            width: 2px;
+            background: #667eea;
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 30px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -37px;
+            top: 20px;
+            width: 12px;
+            height: 12px;
+            background: #667eea;
+            border-radius: 50%;
+            border: 3px solid white;
+        }
+        
+        .achievement-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+            width: 100%;
+        }
+        
+        .achievement-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 3px solid #28a745;
+        }
+        
+        .tech-stack-visual {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+            width: 100%;
+        }
+        
+        .tech-item {
+            text-align: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+        }
+        
+        .tech-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .arch-diagram {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            border: 2px dashed #667eea;
+            width: 100%;
+        }
+        
+        ul {
+            padding-left: 20px;
+            line-height: 1.8;
+        }
+        
+        li {
+            margin-bottom: 8px;
+        }
+        
+        .metric {
+            background: rgba(19, 162, 110, 0.8);
+            color: white;
+            padding: 2px 4px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .section-divider {
+            height: 2px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            margin: 20px 0;
+            border-radius: 2px;
+            width: 100%;
+        }
+        
+        .arch-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding-top: 15px;
+            width: 100%;
+        }
+        
+        .arch-main-layout {
+            display: flex;
+            gap: 15px;
+            flex: 1;
+        }
+        
+        .arch-left-section {
+            flex: 1.5;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .arch-infrastructure-section {
+            background: #f0f9ff;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            padding: 15px;
+            flex: 1;
+            position: relative;
+        }
+        
+        .arch-section-title {
+            font-size: 16px;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-weight: 700;
+            text-align: center;
+        }
+        
+        .arch-automation-badges {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            display: flex;
+            gap: 5px;
+        }
+        
+        .arch-badge {
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 600;
+            color: white;
+        }
+        
+        .arch-ansible-badge {
+            background: #17a2b8;
+        }
+        
+        .arch-vault-badge {
+            background: #dc3545;
+        }
+        
+        .arch-infra-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .arch-component-box {
+            background: #ffffff;
+            border: 2px solid #bdc3c7;
+            border-radius: 6px;
+            padding: 10px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .arch-lb-box {
+            background: #ecf0f1;
+            border-color: #34495e;
+        }
+        
+        .arch-master-box {
+            background: #d5f4e6;
+            border-color: #27ae60;
+        }
+        
+        .arch-worker-box {
+            background: #dbeafe;
+            border-color: #667eea;
+        }
+        
+        .arch-options-section {
+            background: #fff9e6;
+            border: 2px solid #f39c12;
+            border-radius: 6px;
+            padding: 10px;
+            margin-top: 8px;
+        }
+        
+        .arch-options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            margin-top: 5px;
+        }
+        
+        .arch-option-item {
+            background: #ffffff;
+            border: 1px solid #f39c12;
+            border-radius: 4px;
+            padding: 6px;
+            text-align: center;
+            font-size: 11px;
+        }
+        
+        .arch-storage-section {
+            background: #f8f9fa;
+            border: 2px solid #6c757d;
+            border-radius: 6px;
+            padding: 12px;
+            flex: 0.6;
+        }
+        
+        .arch-storage-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        
+        .arch-storage-box {
+            background: #ffffff;
+            border: 2px solid #f59e0b;
+            border-radius: 6px;
+            padding: 8px;
+            text-align: center;
+        }
+        
+        .arch-storage-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        
+        .arch-storage-desc {
+            font-size: 12px;
+            color: #6c757d;
+        }
+        
+        .arch-right-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .arch-platform-section {
+            background: #f0f9ff;
+            border: 2px solid #667eea;
+            border-radius: 6px;
+            padding: 10px;
+            flex: 0.6;
+        }
+        
+        .arch-platform-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+            margin-top: 6px;
+        }
+        
+        .arch-platform-item {
+            background: #ffffff;
+            border: 1px solid #667eea;
+            border-radius: 4px;
+            padding: 5px;
+            font-size: 11px;
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .arch-outer-section {
+            background: #f8f9fa;
+            border: 2px solid #6c757d;
+            border-radius: 6px;
+            padding: 10px;
+            flex: 1;
+        }
+        
+        .arch-outer-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 4px;
+            margin-top: 6px;
+        }
+        
+        .arch-outer-item {
+            background: #ffffff;
+            border: 1px solid #6c757d;
+            border-radius: 3px;
+            padding: 4px;
+            text-align: center;
+            font-size: 9px;
+            font-weight: 600;
+        }
+        
+        .arch-security { 
+            border-color: #dc3545; 
+            background: #fff5f5; 
+        }
+        
+        .arch-cicd { 
+            border-color: #28a745; 
+            background: #f0fff4; 
+        }
+        
+        .arch-database { 
+            border-color: #17a2b8; 
+            background: #f0fdff; 
+        }
+        
+        .arch-monitoring { 
+            border-color: #ffc107; 
+            background: #fffbf0; 
+        }
+        
+        .arch-backup { 
+            border-color: #6f42c1; 
+            background: #f8f6ff; 
+        }
+        
+        .arch-environment-support {
+            background: #e8f5e8;
+            border: 2px solid #28a745;
+            border-radius: 6px;
+            padding: 8px;
+            margin-top: 8px;
+            text-align: center;
+        }
+        
+        .arch-env-badges {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 5px;
+        }
+        
+        .arch-env-badge {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-weight: 600;
+            color: white;
+            font-size: 10px;
+        }
+        
+        .arch-onprem-badge {
+            background: #e74c3c;
+        }
+        
+        .arch-aws-badge {
+            background: #f39c12;
+        }
+        
+        .arch-azure-badge {
+            background: #667eea;
+        }
+        
+        .arch-legend {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .arch-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            font-size: 10px;
+        }
+        
+        .arch-legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+            border: 1px solid #333;
+        }
+        
+    </style>
+</head>
+<body>
+
+<div class="presentation-container">
+    <div class="slides-wrapper">
+        <div class="slide slide-cover">
+            <h1>DevOps Engineer Portfolio</h1>
+            <div class="subtitle">네오플 시스템/네트워크 엔지니어</div>
+            <div class="contact">
+                <div><strong>송 지 훈 </strong></div>
+                <div>newverka@naver.com</div>
+                <div>010-4551-5918</div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-header">
+                <h2>Professional Summary</h2>
+                <div class="subtitle">DevOps Engineer</div>
+            </div>
+            <div class="content">
+                <div class="two-column">
+                    <div>
+                        <h3 style="color: #667eea; margin-bottom: 20px;">💼 경력 요약</h3>
+                        <div class="highlight-box">
+                            <span class="highlight-number">2년 2개월</span>
+                            DevOps 실무 경력
+                        </div>
+                        <ul style="margin-top: 20px; line-height: 2;">
+                            <li><strong>현재:</strong> (주)오에스씨코리아</li>
+                            <li><strong>전문분야:</strong> Kubernetes, Cloud Infrastructure, IaC</li>
+                            <li><strong>주요역량:</strong> AWS/Azure 멀티클라우드 운영</li>
+                            <li><strong>특화기술:</strong> Terraform, Ansible 자동화</li>
+                        </ul>
+                        <div style="margin-top: 150px;">
+                            <a href="https://github.com/Hoony-Song" target="_blank" 
+                               style="display: inline-block; padding: 10px 20px; background: #7c55d7; color: white; 
+                                      text-decoration: none; border-radius: 5px; font-weight: bold;">
+                                📂 GitHub Link
+                            </a>
+                            <a href="https://newverka.notion.site" target="_blank" 
+                               style="display: inline-block; padding: 10px 20px; background: #7c55d7; color: white; 
+                                      text-decoration: none; border-radius: 5px; font-weight: bold;">
+                                📝 Notion Link
+                            </a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 style="color: #667eea; margin-bottom: 20px;">🎯 핵심 강점</h3>
+                        <div class="achievement-grid">
+                            <div class="achievement-item">
+                                <strong>비용 최적화</strong><br>
+                                AWS cost optimization<br>
+                                <span class="metric">비용 효율성</span>
+                            </div>
+                            <div class="achievement-item">
+                                <strong>Platform Automation</strong><br>
+                                IaC 기반 자동화 구축<br>
+                                <span class="metric">운영 효율성 극대화</span>
+                            </div>
+                            <div class="achievement-item">
+                                <strong>멀티 클라우드 구축</strong><br>
+                                AWS, Azure, KTCloud<br>
+                                <span class="metric">국내외 CSP 경험</span>
+                            </div>
+                            <div class="achievement-item">
+                                <strong>무중단 운영</strong><br>
+                                클러스터 마이그레이션<br>
+                                <span class="metric">안정성 확보</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-header">
+                <h2>Technology Stack</h2>
+                <div class="subtitle">다양한 클라우드 네이티브 환경에서의 실무 경험</div>
+            </div>
+            <div class="content" style="margin-top: 40px;">
+                <div class="three-column">
+                    <div class="skill-category">
+                        <h3>☁️ Cloud Platform</h3>
+                        <div class="skill-list">
+                            <span class="skill-tag">AWS</span>
+                            <span class="skill-tag">Azure</span>
+                            <span class="skill-tag">KTCloud</span>
+                        </div>
+                    </div>
+                    <div class="skill-category">
+                        <h3>🚀 Container & Orchestration</h3>
+                        <div class="skill-list">
+                            <span class="skill-tag">Kubernetes</span>
+                            <span class="skill-tag">RKE2</span>
+                            <span class="skill-tag">EKS</span>
+                            <span class="skill-tag">AKS</span>
+                            <span class="skill-tag">Docker</span>
+                        </div>
+                    </div>
+                    <div class="skill-category">
+                        <h3>⚙️ IaC </h3>
+                        <div class="skill-list">
+                            <span class="skill-tag">Terraform</span>
+                            <span class="skill-tag">Ansible</span>
+                            <span class="skill-tag">Ansible Vault</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="section-divider"></div>
+                
+                <div class="three-column">
+                    <div class="skill-category">
+                        <h3>🔧 CI/CD & Repository</h3>
+                        <div class="skill-list">
+                            <span class="skill-tag">GitLab CI</span>
+                            <span class="skill-tag">ArgoCD</span>
+                            <span class="skill-tag">Nexus</span>
+                        </div>
+                    </div>
+                    <div class="skill-category">
+                        <h3>🖥️ Operating System</h3>
+                        <div class="skill-list">
+                            <span class="skill-tag">Ubuntu 20.04</span>
+                            <span class="skill-tag">RHEL9</span>
+                            <span class="skill-tag">Amazon Linux</span>
+                            <span class="skill-tag">Rocky8</span>
+                        </div>
+                    </div>
+                    <div class="skill-category">
+                        <h3>📊 Monitoring</h3>
+                        <div class="skill-list">
+                            <span class="skill-tag">Prometheus</span>
+                            <span class="skill-tag">Loki</span>
+                            <span class="skill-tag">Grafana</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-header">
+                <h2>Automation Experience</h2>
+                <div class="subtitle">반복 운영 작업 자동화로 효율성 및 안정성 향상</div>
+            </div>
+            <div class="content">
+                <div class="two-column">
+                    <div>
+                        <div class="project-card">
+                            <h3>🔧 Terraform 명령어 래핑 자동화</h3>
+                            <div class="project-content">
+                                <p><strong>목표:</strong> Terraform 실행 과정 자동화</p>
+                                <ul>
+                                    <li><code>terraform apply</code> 실행 시 </li>
+                                    <li><code>~/.zshrc</code>에서 terraform 함수 후킹 후 wrapper.sh 실행</li>
+                                    <li><code>wrapper.sh</code>를 통해 현재 workspace 이름의 .tfvars 파일 탐색</li>
+                                    <li>terraform apply 시 workspace별 <code>.tfvars</code> 자동 적용</li>
+                                </ul>
+                                <div class="highlight-box" style="margin-top: 15px;">
+                                    <span class="metric">휴먼 에러 방지</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="project-card">
+                            <h3>📊 운영 자동화 스크립트</h3>
+                            <div class="project-content">
+                                <p><strong>구현 내용:</strong></p>
+                                <ul>
+                                    <li><strong>Log Backup 자동화</strong>
+                                        <br>Cron 기반 백업 스케줄링</li>
+                                    <li><strong>사용자 권한 관리</strong>
+                                        <br>운영자 그룹 자동 추가/권한 설정</li>
+                                </ul>
+                                <div class="highlight-box" style="margin-top: 15px;">
+                                    <span class="metric">운영 안정성 향상</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-header">
+                <h2>Major Projects Overview</h2>
+                <div class="subtitle">다양한 플랫폼에서 구축, 운영, 마이그레이션, 고도화 프로젝트 경험</div>
+            </div>
+            <div class="content">
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <h4 style="color: #667eea;">KT - 쿠버네티스 플랫폼 자동화 Ansible 고도화</h4>
+                        <div class="project-meta">
+                            <span>2025.03 ~ 2025.05</span>
+                            <span>Azure, RKE2, Ansible</span>
+                        </div>
+                        <p>재사용성 극대화 및 멀티클라우드 호환성 구현</p>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <h4 style="color: #667eea;">KTCloud - 운영 및 기술지원</h4>
+                        <div class="project-meta">
+                            <span>2024.08 ~ 2025.03</span>
+                            <span>KTCloud, Kubernetes</span>
+                        </div>
+                        <p>EPC 고객 기술지원 및 보안 취약점 개선</p>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <h4 style="color: #667eea;">솔루엠 - Azure 클라우드 IaC 전환</h4>
+                        <div class="project-meta">
+                            <span>2024.06 ~ 2024.07</span>
+                            <span>Azure, Terraform</span>
+                        </div>
+                        <p>수동 관리에서 코드 기반 자동화로 전환</p>
+                    </div>
+                    
+                    <div class="timeline-item">
+                        <h4 style="color: #667eea;">투비소프트 - 클라우드 기반 PaaS 플랫폼</h4>
+                        <div class="project-meta">
+                            <span>2023.06 ~ 2023.12</span>
+                            <span>AWS EKS, Terraform</span>
+                        </div>
+                        <p>AWS 비용 41% 절감 및 IaC 자동화 구축</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-header">
+                <h2>소방재난본부 - 클러스터 마이그레이션</h2>
+                <div class="subtitle">신규 K8S 클러스터로의 무중단 마이그레이션</div>
+            </div>
+            <div class="content">
+                <div class="two-column">
+                    <div>
+                        <h3 style="color: #667eea; margin-bottom: 15px;">📋 프로젝트 개요</h3>
+                        <ul style="line-height: 2;">
+                            <li><strong>기간:</strong> 2025.05 ~ 2025.06</li>
+                            <li><strong>팀 구성:</strong> SA 2명</li>
+                            <li><strong>목표:</strong> 기존 K8S 클러스터에서 Auto Scaling 적용된 신규 K8S 클러스터로 Migration</li>
+                            <li><strong>역할:</strong> CI/CD 리스크 분석, 트러블슈팅</li>
+                        </ul>
+                        
+                        <h3 style="color: #667eea; margin: 20px 0 15px;">🛠️ 사용 기술</h3>
+                        <div class="tech-stack-visual">
+                            <div class="tech-item">
+                                <strong>KTCloud</strong><br>
+                                <small>Cloud Platform</small>
+                            </div>
+                            <div class="tech-item">
+                                <strong>Velero</strong><br>
+                                <small>Backup/Restore</small>
+                            </div>
+                            <div class="tech-item">
+                                <strong>CI/CD</strong><br>
+                                <small>Gitlab <br>Jenkins</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 style="color: #667eea; margin-bottom: 15px;">🎯 주요 성과</h3>
+                        <div class="achievement-grid">
+                            <div class="achievement-item">
+                                <strong>무중단 마이그레이션</strong><br>
+                                서비스 중단 없이<br>
+                                <span class="metric">100% 성공</span>
+                            </div>
+                            <div class="achievement-item">
+                                <strong>네트워크 최적화</strong><br>
+                                아키텍처 개선<br>
+                                <span class="metric">트래픽 플로우 단순화</span>
+                            </div>
+                            <div class="achievement-item">
+                                <strong>리소스 최적화</strong><br>
+                                워크로드 스케줄링<br>
+                                <span class="metric">안정성 향상</span>
+                            </div>
+                            <div class="achievement-item">
+                                <strong>프로젝트 완료</strong><br>
+                                일정 대비<br>
+                                <span class="metric">조기 종료</span>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="highlight-box">
+                            <strong>🔧 주요 업무</strong><br>
+                            CI/CD 파이프라인 리스크 분석 및<br>
+                            마이그레이션 후 트러블슈팅 전담
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-header">
+                <h2>KT - Kubernetes 플랫폼 Ansible 고도화</h2>
+                <div class="subtitle">멀티클라우드 호환성 및 재사용성 극대화</div>
+            </div>
+            <div class="content">
+                <div class="two-column">
+                    <div>
+                        <h3 style="color: #667eea; margin-bottom: 15px;">📋 프로젝트 개요</h3>
+                        <ul style="line-height: 2;">
+                            <li><strong>기간:</strong> 2025.03 ~ 2025.05</li>
+                            <li><strong>역할:</strong> 코드 리팩토링, Azure 적용, Vault 암호화</li>
+                            <li><strong>목표:</strong> 재사용성 극대화 및 멀티클라우드 지원</li>
+                        </ul>
+                        
+                        <h3 style="color: #667eea; margin: 20px 0 15px;">🔧 핵심 구현사항</h3>
+                        <ul style="line-height: 1.8;">
+                            <li><strong>전체 코드 리팩토링</strong><br>
+                            모듈화 및 재사용성 극대화</li>
+                            <li><strong>Azure Account 적용</strong><br>
+                            멀티클라우드 호환성 구현</li>
+                            <li><strong>Ansible-Vault 도입</strong><br>
+                            보안성 강화</li>
+                            <li><strong>멀티 OS 지원</strong><br>
+                            RHEL9, Rocky8 호환</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 style="color: #667eea; margin-bottom: 15px;">🎯 주요 성과</h3>
+                        <div class="achievement-grid">
+                            <div class="achievement-item">
+                                <strong>재사용성 극대화</strong><br>
+                                모듈화된 코드 구조<br>
+                                <span class="metric">유지보수성 향상</span>
+                            </div>
+                            <div class="achievement-item">
+                                <strong>멀티클라우드 호환</strong><br>
+                                On-premise + Azure<br>
+                                <span class="metric">플랫폼 독립성</span>
+                            </div>
+                            <div class="achievement-item">
+                                <strong>버전 관리 개선</strong><br>
+                                아우터 아키텍처<br>
+                                <span class="metric">효율적 관리</span>
+                            </div>
+                            <div class="achievement-item">
+                                <strong>보안 강화</strong><br>
+                                Vault 암호화<br>
+                                <span class="metric">데이터 보호</span>
+                            </div>
+                        </div>
+                        <br>
+                        
+                        <div class="highlight-box">
+                            <strong>💡 기술적 성과</strong><br>
+                            레거시 코드 전면 리팩토링을 통한 코드 가독성 및 재사용성 향상<br>
+                            플랫폼 독립성 확보로 단일 플레이북 멀티클라우드 배포 자동화<br>
+                            Vault 암호화로 보안성 향상
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-header">
+                <h2>KT - Kubernetes 플랫폼 Ansible 고도화</h2>
+                <div class="subtitle">Ansible 기반 쿠버네티스 배포 구조</div>
+            </div>
+            
+            <div class="arch-content">
+                <div class="arch-main-layout">
+                    <div class="arch-left-section">
+                        <div class="arch-infrastructure-section">
+                            <div class="arch-section-title">🏗️ 인프라 구성</div>
+                            <div class="arch-automation-badges">
+                                <div class="arch-badge arch-ansible-badge">Ansible 자동화</div>
+                                <div class="arch-badge arch-vault-badge">Vault 보안</div>
+                            </div>
+                            
+                            <div class="arch-infra-grid">
+                                <div class="arch-component-box arch-lb-box">
+                                    <div style="font-size: 16px; margin-bottom: 8px;">⚖️ 로드밸런서</div>
+                                    <div style="font-size: 12px; color: #6c757d;">
+                                        On-prem: HAProxy<br>
+                                        Cloud: L4 LB / HAProxy
+                                    </div>
+                                </div>
+                                <div class="arch-component-box arch-master-box">
+                                    <div style="font-size: 16px; margin-bottom: 8px;">🎛️ 마스터 노드</div>
+                                    <div style="font-size: 12px; color: #6c757d;">
+                                        단일 또는 3대 HA<br>
+                                        RKE2 + Rancher
+                                    </div>
+                                </div>
+                                <div class="arch-component-box arch-worker-box">
+                                    <div style="font-size: 16px; margin-bottom: 8px;">⚙️ 워커 노드</div>
+                                    <div style="font-size: 12px; color: #6c757d;">
+                                        동적 확장 가능<br>
+                                        컨테이너 워크로드
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="arch-options-section">
+                                <div style="font-weight: 600; text-align: center; margin-bottom: 10px; color: #f39c12;">🔧 구성 옵션</div>
+                                <div class="arch-options-grid">
+                                    <div class="arch-option-item">
+                                        <strong>OS 선택</strong><br>
+                                        Rocky Linux / RHEL
+                                    </div>
+                                    <div class="arch-option-item">
+                                        <strong>마스터 구성</strong><br>
+                                        Single / Multi (3대)
+                                    </div>
+                                    <div class="arch-option-item">
+                                        <strong>네트워크</strong><br>
+                                        완전 격리 (Air-gap)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="arch-storage-section">
+                            <div class="arch-section-title">💾 스토리지 솔루션</div>
+                            <div class="arch-storage-grid">
+                                <div class="arch-storage-box">
+                                    <div class="arch-storage-title">On-premise</div>
+                                    <div class="arch-storage-desc">Longhorn<br>분산 블록 스토리지</div>
+                                </div>
+                                <div class="arch-storage-box">
+                                    <div class="arch-storage-title">AWS</div>
+                                    <div class="arch-storage-desc">Longhorn + EBS<br>하이브리드 스토리지</div>
+                                </div>
+                                <div class="arch-storage-box">
+                                    <div class="arch-storage-title">Azure</div>
+                                    <div class="arch-storage-desc">Azure Files + Disk<br>네이티브 스토리지</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="arch-right-section">
+                        <div class="arch-platform-section">
+                            <div class="arch-section-title">🎛️ 기본 플랫폼</div>
+                            <div class="arch-platform-grid">
+                                <div class="arch-platform-item">RKE2 Cluster</div>
+                                <div class="arch-platform-item">Rancher Dashboard</div>
+                                <div class="arch-platform-item">CSI Driver</div>
+                                <div class="arch-platform-item">Velero Backup</div>
+                            </div>
+                        </div>
+                        
+                        <div class="arch-outer-section">
+                            <div class="arch-section-title">🔧 아우터 컴포넌트 (선택 설치)</div>
+                            <div class="arch-outer-grid">
+                                <div class="arch-outer-item arch-security">Keycloak</div>
+                                <div class="arch-outer-item arch-security">Cert-Manager</div>
+                                <div class="arch-outer-item arch-security">NeuVector</div>
+                                <div class="arch-outer-item arch-cicd">GitLab</div>
+                                <div class="arch-outer-item arch-cicd">Jenkins</div>
+                                <div class="arch-outer-item arch-cicd">ArgoCD</div>
+                                <div class="arch-outer-item arch-database">MariaDB</div>
+                                <div class="arch-outer-item arch-database">MySQL</div>
+                                <div class="arch-outer-item arch-database">PostgreSQL</div>
+                                <div class="arch-outer-item arch-database">Redis</div>
+                                <div class="arch-outer-item arch-monitoring">Prometheus</div>
+                                <div class="arch-outer-item arch-monitoring">Grafana</div>
+                                <div class="arch-outer-item arch-monitoring">Jaeger</div>
+                                <div class="arch-outer-item arch-monitoring">FluentBit</div>
+                                <div class="arch-outer-item arch-monitoring">OpenSearch</div>
+                                <div class="arch-outer-item arch-backup">MinIO</div>
+                            </div>
+                        </div>
+                        
+                        <div class="arch-environment-support">
+                            <div style="font-weight: 600; color: #28a745; margin-bottom: 8px;">🌐 지원 환경</div>
+                            <div class="arch-env-badges">
+                                <div class="arch-env-badge arch-onprem-badge">On-premise</div>
+                                <div class="arch-env-badge arch-aws-badge">AWS</div>
+                                <div class="arch-env-badge arch-azure-badge">Azure</div>
+                            </div>
+                            <div style="font-size: 12px; margin-top: 8px; color: #6c757d;">
+                                동일한 코드베이스로 모든 환경 지원
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-header">
+                <h2>KTCloud - 운영 및 기술지원</h2>
+                <div class="subtitle">대규모 고객 지원 및 보안 취약점 개선</div>
+            </div>
+            <div class="content">
+                <div class="two-column">
+                    <div>
+                        <h3 style="color: #667eea; margin-bottom: 15px;">📋 프로젝트 개요</h3>
+                        <ul style="line-height: 2;">
+                            <li><strong>기간:</strong> 2024.08 ~ 2025.03 </li>
+                            <li><strong>팀 구성:</strong> BE 2명, SA 1명</li>
+                            <li><strong>역할:</strong> KTCloud 기술지원, VoC 대응</li>
+                        </ul>
+                        
+                        <h3 style="color: #667eea; margin: 20px 0 15px;">🛡️ 보안 강화 작업</h3>
+                        <ul style="line-height: 1.8;">
+                            <li><strong>CSAP 인증 보안 점검</strong><br>
+                            nginx ingress 취약점 개선</li>
+                            <li><strong>Kubernetes 보안 POC</strong><br>
+                            취약점 분석 및 해결방안 제시</li>
+                            <li><strong>자동화 스크립트 적용</strong><br>
+                            Log Backup 및 User 권한 관리</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 style="color: #667eea; margin-bottom: 15px;">🎯 주요 업무 성과</h3>
+                        <div class="achievement-grid">
+                            <div class="achievement-item">
+                                <strong>고객 기술지원</strong><br>
+                                KTCloud 대상<br>
+                                <span class="metric">무중단 안정적 지원</span>
+                            </div>
+                            <div class="achievement-item">
+                                <strong>VoC 대응</strong><br>
+                                구축/운영 장애<br>
+                                <span class="metric">신속한 해결</span>
+                            </div>
+                            <div class="achievement-item">
+                                <strong>문서화</strong><br>
+                                POC 및 가이드<br>
+                                <span class="metric">지식 체계화</span>
+                            </div>
+                            <div class="achievement-item">
+                                <strong>자동화 구현</strong><br>
+                                운영 스크립트<br>
+                                <span class="metric">효율성 향상</span>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="highlight-box">
+                            <strong>🔧 기술적 기여</strong><br>
+                            고객 VoC에 대한 체계적인 POC 진행으로<br>
+                            기술 문제 해결 및 가이드 문서 제공
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-header">
+                <h2>솔루엠 - Azure 클라우드 IaC 전환</h2>
+                <div class="subtitle">수동 관리에서 코드 기반 자동화로 전환</div>
+            </div>
+            <div class="content">
+                <div class="two-column">
+                    <div>
+                        <h3 style="color: #667eea; margin-bottom: 15px;">📋 프로젝트 개요</h3>
+                        <ul style="line-height: 2;">
+                            <li><strong>기간:</strong> 2024.06 ~ 2024.07</li>
+                            <li><strong>목표:</strong> Azure 리소스 IaC 도입</li>
+                            <li><strong>역할:</strong> Terraform 전환 및 교육</li>
+                        </ul>
+                        
+                        <h3 style="color: #667eea; margin: 20px 0 15px;">🎓 교육 및 멘토링</h3>
+                        <ul style="line-height: 1.8;">
+                            <li><strong>IaC Terraform 핸즈온</strong><br>
+                            실무 중심 교육 진행</li>
+                            <li><strong>Helm 차트 패키징</strong><br>
+                            고객 솔루션 배포자동화</li>
+                            <li><strong>CLI설치 및 환경구성 자동화</strong><br>
+                            Ubuntu, MacOS, Windows 각 OS별 자동설치 스크립트 제공 <br> 
+                            terraform CLI 명령어 wrapping 구성</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 style="color: #667eea; margin-bottom: 15px;">🎯 주요 성과</h3>
+                        <div class="achievement-grid">
+                            <div class="achievement-item">
+                                <strong>IaC 도입</strong><br>
+                                Azure 리소스<br>
+                                <span class="metric">코드 기반 관리</span>
+                            </div>
+                            <div class="achievement-item">
+                                <strong>Helm 패키징</strong><br>
+                                고객 솔루션<br>
+                                <span class="metric">배포 자동화</span>
+                            </div>
+                            <div class="achievement-item">
+                                <strong>교육 완료</strong><br>
+                                핸즈온 트레이닝<br>
+                                <span class="metric">기술 이전</span>
+                            </div>
+                            <div class="achievement-item">
+                                <strong>자동화 스크립트</strong><br>
+                                환경 구성<br>
+                                <span class="metric">설치 간소화</span>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="highlight-box">
+                            <strong>💼 컨설팅 성과</strong><br>
+                            고객사와의 직접 커뮤니케이션을 통한<br>
+                            맞춤형 솔루션 제공 및 기술 전수
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-header">
+                <h2>롯데마트 - 서비스 고도화 및 통합</h2>
+                <div class="subtitle">계정 통합 및 CI/CD 파이프라인 최적화</div>
+            </div>
+            <div class="content">
+                <div class="two-column">
+                    <div>
+                        <h3 style="color: #667eea; margin-bottom: 15px;">📋 프로젝트 개요</h3>
+                        <ul style="line-height: 2;">
+                            <li><strong>기간:</strong> 2024.03 ~ 2024.05 </li>
+                            <li><strong>플랫폼:</strong> AWS ECS, GitLab CI/CD</li>
+                            <li><strong>목표:</strong> 통합서비스 구축 및 운영 효율화</li>
+                        </ul>
+                        
+                        <h3 style="color: #667eea; margin: 20px 0 15px;">🔧 핵심 업무</h3>
+                        <ul style="line-height: 1.8;">
+                            <li><strong>네트워크 환경 개선 (IP 개수 제한환경) </strong><br>
+                            IP 사용률 최적화로 추가 IP 확보</li>
+                            <li><strong>계정간 마이그레이션</strong><br>
+                            RDS 및 Domain 마이그레이션</li>
+                            <li><strong>CI/CD 파이프라인 고도화</strong><br>
+                            공용 Template 및 Rules 최적화</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 style="color: #667eea; margin-bottom: 15px;">🎯 주요 성과</h3>
+                        <div class="achievement-grid">
+                            <div class="achievement-item">
+                                <strong>서비스 통합</strong><br>
+                                계정별 분리 → 통합<br>
+                                <span class="metric">운영 효율성 향상</span>
+                            </div>
+                            <div class="achievement-item">
+                                <strong>파이프라인 개선</strong><br>
+                                코드 가독성 향상<br>
+                                <span class="metric">개발 생산성 증대</span>
+                            </div>
+                            <div class="achievement-item">
+                                <strong>네트워크 최적화</strong><br>
+                                IP 사용률 개선<br>
+                                <span class="metric">리소스 효율화</span>
+                            </div>
+                            <div class="achievement-item">
+                                <strong>프로젝트 완료</strong><br>
+                                일정 단축<br>
+                                <span class="metric">조기 완료</span>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="highlight-box">
+                            <strong>💡 기술적 성과</strong><br>
+                            CI 코드 최적화를 통한 Job 효율성 개선 및<br>
+                            Rules 분기처리로 배포 속도 및 편의성 개선
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="slide-header">
+                <h2>투비소프트 - PaaS 플랫폼 구축</h2>
+                <div class="subtitle"> 클라우드 비용 최적화 및 자동화 구성</div>
+            </div>
+            <div class="content">
+                <div class="two-column">
+                    <div>
+                        <h3 style="color: #667eea; margin-bottom: 15px;">📋 프로젝트 개요</h3>
+                        <ul style="line-height: 2;">
+                            <li><strong>기간:</strong> 2023.06 ~ 2023.12</li>
+                            <li><strong>팀 구성:</strong> BE 3명, SA 2명</li>
+                            <li><strong>목표:</strong> 넥사크로 제품 클라우드 기반 개발/운영 환경 제공</li>
+                            <li><strong>역할:</strong> terraform을 통한 인프라 관리 및 비용 최적화<br>
+                                <span style="margin-left: 30px;">Outer Architecture 후속작업</span></li>
+                        </ul>
+                        
+                        <h3 style="color: #667eea; margin: 20px 0 15px;">🛠️ 사용 기술</h3>
+                        <div class="tech-stack-visual">
+                            <div class="tech-item">
+                                <strong>AWS EKS</strong><br>
+                                <small>Container Orchestration</small>
+                            </div>
+                            <div class="tech-item">
+                                <strong>Terraform</strong><br>
+                                <small>IaC Automation</small>
+                            </div>
+                            <div class="tech-item">
+                                <strong>GitLab CI</strong><br>
+                                <small>CI/CD Pipeline</small>
+                            </div>
+                            <div class="tech-item">
+                                <strong>ArgoCD</strong><br>
+                                <small>GitOps Deployment</small>
+                            </div>
+                            <div class="tech-item">
+                                <strong>Monitoring</strong><br>
+                                <small>Prometheus <br>
+                                    Loki <br>
+                                    Grafana <br>
+                                    AlertManager</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 style="color: #667eea; margin-bottom: 15px;">🎯 주요 성과</h3>
+                        <div class="achievement-grid">
+                            <div class="achievement-item">
+                                <strong>비용 최적화</strong><br>
+                                월 $6000 → $2500<br>
+                                <span class="metric">41% 절감</span>
+                            </div>
+                            <div class="achievement-item">
+                                <strong>테스트베드 구축 자동화</strong><br>
+                                자동 생성/제거<br>
+                                <span class="metric">비용절감</span>
+                            </div>
+                            <div class="achievement-item">
+                                <strong>IaC 자동화</strong><br>
+                                EKS 애드온 자동 구성<br>
+                                <span class="metric">설치 시간 단축</span>
+                            </div>
+                            <div class="achievement-item">
+                                <strong>서비스 론칭</strong><br>
+                                2024.06 TobeDevOps<br>
+                                <span class="metric">성공적 출시</span>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="highlight-box">
+                            <strong>💡 비용절감 성과</strong><br>
+                            테스트베드 환경의 운영시간을 최소화 하여 비용절감<br>
+                            부트스트랩 단계에서 과도하게 책정된 인프라 사양을 적정 수준으로 조정 및 <br>
+                            근무시간 외 셧다운을 도입하여 AWS 비용을 월 $6000에서 $2500 수준으로 41% 절감
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    
+    <div class="nav-arrow left-arrow">&lsaquo;</div>
+    <div class="nav-arrow right-arrow">&rsaquo;</div>
+    <div class="slide-counter"></div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const wrapper = document.querySelector('.slides-wrapper');
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        const prevArrow = document.querySelector('.left-arrow');
+        const nextArrow = document.querySelector('.right-arrow');
+        const counter = document.querySelector('.slide-counter');
+        
+        let currentIndex = 0;
+        
+        function updateSlidePosition() {
+            // 각 슬라이드는 컨테이너의 100% 너비를 가지므로, 인덱스에 따라 100%씩 이동
+            wrapper.style.transform = `translateX(-${currentIndex * 100}%)`;
+            updateControls();
+        }
+
+        function updateControls() {
+            // 카운터 업데이트
+            counter.textContent = `${currentIndex + 1} / ${totalSlides}`;
+            
+            // 화살표 보이기/숨기기
+            prevArrow.classList.toggle('hidden', currentIndex === 0);
+            nextArrow.classList.toggle('hidden', currentIndex === totalSlides - 1);
+        }
+
+        // 다음 슬라이드로 이동
+        nextArrow.addEventListener('click', () => {
+            if (currentIndex < totalSlides - 1) {
+                currentIndex++;
+                updateSlidePosition();
+            }
+        });
+
+        // 이전 슬라이드로 이동
+        prevArrow.addEventListener('click', () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateSlidePosition();
+            }
+        });
+
+        // 키보드 방향키로 탐색
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'ArrowRight') {
+                nextArrow.click();
+            } else if (event.key === 'ArrowLeft') {
+                prevArrow.click();
+            }
+        });
+
+        // 초기 상태 설정
+        updateSlidePosition();
+    });
+</script>
+
+</body>
+</html>
